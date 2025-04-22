@@ -1,0 +1,18 @@
+# Task ID: 6
+# Title: Child Application Launch Functionality
+# Status: pending
+# Dependencies: 4
+# Priority: high
+# Description: Implement the functionality to launch the child application in either an iframe or a new tab.
+# Details:
+1. Create LaunchOptions component with toggle for iframe vs. new tab
+2. Implement IframeRenderer component for embedded rendering
+3. Create NewTabLauncher component for new tab launching
+4. Add URL preview functionality
+5. Implement TokenPreview component to display generated token
+6. Create URL construction logic based on configuration
+7. Handle potential iframe rendering errors (X-Frame-Options, etc.)
+8. Add launch button to initiate the process
+
+# Test Strategy:
+Test both launch modes (iframe and new tab). Verify URL preview functionality. Ensure token is correctly appended to the URL. Test error handling for iframe rendering issues.
