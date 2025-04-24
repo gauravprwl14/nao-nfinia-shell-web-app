@@ -20,14 +20,44 @@ export interface UrlConfig {
 }
 
 /**
+ * @interface SigKey
+ * @description Defines the structure for signature-related keys.
+ * @property {string} publicKey - The public key (in PEM/SPKI format) used for signature verification.
+ */
+export interface SigKey {
+  publicKey: string;
+}
+
+/**
+ * @interface EncKey
+ * @description Defines the structure for encryption-related keys.
+ * @property {string} publicKey - The public key (in PEM/SPKI format) used for JWE encryption.
+ */
+export interface EncKey {
+  publicKey: string;
+}
+
+/**
+ * @interface KeySet
+ * @description Defines the nested structure containing signature and encryption keys.
+ * @property {SigKey} sig - Contains keys related to signing operations.
+ * @property {EncKey} enc - Contains keys related to encryption operations.
+ */
+export interface KeySet {
+  sig: SigKey;
+  enc: EncKey;
+}
+
+/**
  * @interface EnvironmentConfig
  * @description Defines the configuration specific to a single environment within a client.
  * @property {string} name - The unique name of the environment (e.g., "dev", "qa", "prod").
  * @property {string} childDomain - The base domain name of the child application for this environment.
- * @property {string} apiKey - The API key (or key identifier) used for this environment, potentially for JWE 'kid'.
- * @property {string} apiSecret - A secret associated with the API key (usage depends on implementation, handle securely).
- * @property {string} publicKey - The public key (in SPKI format) used for JWE encryption for this environment.
- * @property {string} [keyEncryptionAlgorithm="RSA-OAEP-256"] - The JWE algorithm for key encryption (e.g., "RSA-OAEP-256").
+ * @property {string} clientId - The client identifier for this environment.
+ * @property {string} clientSecret - The client secret associated with the clientId (handle securely).
+ * @property {string} sharedSecret - A shared secret used for specific cryptographic operations (handle securely).
+ * @property {KeySet} keys - An object containing the public keys for signing and encryption.
+ * @property {string} [keyEncryptionAlgorithm="RSA-OAEP-256"] - The JWE algorithm for key encryption (e.g., "RSA-OAEP-256"). Corresponds to the 'enc' key usage.
  * @property {string} [contentEncryptionAlgorithm="A256GCM"] - The JWE algorithm for content encryption (e.g., "A256GCM").
  * @property {number} [tokenExpiration=300] - The default expiration time for generated tokens in seconds (default: 5 minutes).
  * @property {UrlConfig} [urlConfig] - Optional specific URL construction parameters for this environment.
@@ -35,13 +65,15 @@ export interface UrlConfig {
 export interface EnvironmentConfig {
   name: string;
   childDomain: string;
-  apiKey: string;
-  apiSecret: string; // Note: Ensure this is handled securely and never exposed client-side if sensitive.
-  publicKey: string;
-  keyEncryptionAlgorithm?: string;
-  contentEncryptionAlgorithm?: string;
-  tokenExpiration?: number;
-  urlConfig?: UrlConfig;
+  clientId: string; // Added based on .env
+  clientSecret: string; // Added based on .env (Note: Ensure this is handled securely)
+  sharedSecret: string; // Added based on .env (Note: Ensure this is handled securely)
+  keys: KeySet; // Added nested keys structure based on .env
+  keyEncryptionAlgorithm?: string; // Kept as optional, maps to 'enc' key usage
+  contentEncryptionAlgorithm?: string; // Kept as optional
+  tokenExpiration?: number; // Kept as optional
+  urlConfig?: UrlConfig; // Kept as optional
+  // Removed apiKey, apiSecret (top-level), publicKey (top-level) as they are replaced/restructured
 }
 
 /**
