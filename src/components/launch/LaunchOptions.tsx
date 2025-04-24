@@ -119,7 +119,7 @@ const LaunchOptions: React.FC<LaunchOptionsProps> = ({
           }`}
           aria-disabled={isLoading || !canLaunch}
         >
-          Launch Child App
+          Launch NAO App
         </button>
       </div>
     </div>

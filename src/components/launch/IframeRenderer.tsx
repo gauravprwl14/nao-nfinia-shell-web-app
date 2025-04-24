@@ -30,11 +30,11 @@ const IframeRenderer: React.FC<IframeRendererProps> = ({ url }) => {
   return (
     <div className="p-4 border rounded-md shadow-sm bg-white dark:bg-gray-800">
       <h3 className="text-lg font-semibold mb-3 text-gray-800 dark:text-gray-200">
-        Child Application (Iframe)
+        NAO Application (Iframe)
       </h3>
       <iframe
         src={url}
-        title="Child Application"
+        title="NAO Application"
         className="w-full h-96 border border-gray-300 rounded-md dark:border-gray-600"
         // Consider adding sandbox attributes for security if needed:
         // sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
@@ -45,7 +45,7 @@ const IframeRenderer: React.FC<IframeRendererProps> = ({ url }) => {
           // Consider checking for specific errors like X-Frame-Options issues,
           // although detecting them reliably client-side is difficult.
         }}
-        aria-label="Embedded child application content"
+        aria-label="Embedded NAO application content"
       ></iframe>
     </div>
   );

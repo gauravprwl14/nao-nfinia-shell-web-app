@@ -8,7 +8,11 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getEnvironmentConfig, loadAndValidateConfig } from "@/lib/config";
-import { generateJweToken, constructLaunchUrl } from "@/lib/jwe";
+import {
+  generateSignedAndEncryptedToken,
+  generateJweToken,
+  constructLaunchUrl,
+} from "@/lib/jwe";
 import { CombinedPayload, SessionPayload, UserPayload } from "@/types/payload";
 import {
   GenerateTokenRequest,
@@ -129,7 +133,7 @@ export async function POST(
     // --- 5. Generate JWE Token ---
     let jweToken: string;
     try {
-      jweToken = await generateJweToken({
+      jweToken = await generateSignedAndEncryptedToken({
         payload: combinedPayload,
         config: environmentConfig,
       });
