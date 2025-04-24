@@ -2,45 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { isValidJson } from "@/lib/validators";
-import { SessionPayload } from "@/types/payload"; // Import type for default
+import { defaultSessionPayload } from "@/utils/payload"; // Import type for default
 
-// Default template based on PRD section 8.1
-// const defaultSessionPayload: SessionPayload = {
-//   sessionId: "59df3825-9f61-448f-9afa-4e79c03de3ed",
-//   issuedAt: new Date().toISOString(), // Use current time as default
-//   expiresAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(), // Default 5 mins expiry
-//   sourceIp: "192.168.1.1", // Example IP
-//   sourceSystem: "MainBankingPortal",
-//   sessionAttributes: {
-//     deviceFingerprint: "device-fingerprint-hash",
-//     authMethod: "PASSWORD",
-//     mfaCompleted: true,
-//     authLevel: "FULL_ACCESS",
-//   },
-// };
-
-/**
- * @function generateDefaultSessionPayload
- * @description Generates the default session payload object with dynamic values.
- * @description Creates a UUID v4 for the session ID, sets issued and expiry timestamps,
- *              and includes predefined keep-alive and callback URLs, nested under a 'session' key.
- * @returns {object} The default session payload object structured as { session: { ... } }.
- */
-const generateDefaultSessionPayload = (): SessionPayload => {
-  const now = new Date();
-  const expires = new Date(now.getTime() + 5 * 60 * 1000); // 5 minutes expiry
-
-  return {
-    id: crypto.randomUUID(), // Generate UUID v4
-    issuedAt: now.toISOString(),
-    expiresAt: expires.toISOString(),
-    keepAliveUrl: "https://www.digital-channel.com/keep-alive", // Example URL
-    callbackUrl: "https://www.digital-channel.com/callback", // Example URL
-  };
-};
-
-// Default template based on the requested structure
-const defaultSessionPayload = generateDefaultSessionPayload();
 /**
  * @interface SessionPayloadEditorProps
  * @description Props for the SessionPayloadEditor component.
@@ -63,7 +26,7 @@ interface SessionPayloadEditorProps {
  */
 const SessionPayloadEditor: React.FC<SessionPayloadEditorProps> = ({
   onChange,
-  initialValue = JSON.stringify(defaultSessionPayload, null, 2), // Use default template
+  initialValue = defaultSessionPayload, // Use default template
 }): React.ReactElement => {
   // --- State ---
   const [payload, setPayload] = useState<string>(initialValue);

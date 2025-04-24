@@ -8,59 +8,7 @@ import TokenPreview from "@/components/preview/TokenPreview";
 import IframeRenderer from "@/components/launch/IframeRenderer";
 import { useConfiguration } from "@/context/ConfigurationContext";
 import { logInfo, logError } from "@/lib/logger"; // Assuming logger exists as per PRD
-
-// Default payload templates (as mentioned in Task 3, using PRD examples)
-const defaultSessionPayload = JSON.stringify(
-  {
-    sessionId: "unique-session-identifier",
-    issuedAt: "2025-04-17T10:30:45Z",
-    expiresAt: "2025-04-17T11:30:45Z",
-    sourceIp: "192.168.1.1",
-    sourceSystem: "NAO-Backend",
-    sessionAttributes: {
-      deviceFingerprint: "device-fingerprint-hash",
-      authMethod: "PASSWORD",
-      mfaCompleted: true,
-      authLevel: "FULL_ACCESS",
-    },
-  },
-  null,
-  2
-);
-
-const defaultUserPayload = JSON.stringify(
-  {
-    memberId: "123456789",
-    memberSince: "2015-06-12",
-    personalInfo: {
-      firstName: "John",
-      middleName: "David",
-      lastName: "Smith",
-      dateOfBirth: "1980-05-15",
-      taxId: "last-four-only",
-      email: "john.smith@example.com",
-      phoneNumber: "+1234567890",
-    },
-    addressInfo: {
-      streetAddress: "123 Main St",
-      city: "Anytown",
-      state: "CA",
-      zipCode: "12345",
-      country: "US",
-    },
-    accountInfo: {
-      hasCheckingAccount: true,
-      hasSavingsAccount: true,
-      hasLoanAccount: false,
-      accountsTotals: {
-        checking: "AVAILABLE_ONLY",
-        savings: "AVAILABLE_ONLY",
-      },
-    },
-  },
-  null,
-  2
-);
+import { defaultUserPayload, defaultSessionPayload } from "@/utils/payload"; // Assuming this is where default payloads are stored
 
 export function MainApp() {
   const {
