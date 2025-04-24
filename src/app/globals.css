@@ -19,8 +19,7 @@
   }
 }
 
+/* Optional: Add any global base styles here */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-gray-100 text-gray-900;
 }

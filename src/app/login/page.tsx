@@ -1,4 +1,4 @@
-'use client'; // Mark this page as a Client Component
+"use client"; // Mark this page as a Client Component
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
