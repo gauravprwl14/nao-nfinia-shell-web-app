@@ -14,15 +14,24 @@ import { useConfiguration } from "@/context/ConfigurationContext";
  * @example
  * <EnvironmentSelector />
  */
-const EnvironmentSelector: React.FC = (): React.ReactElement | null => {
+const EnvironmentSelector: React.FC = ({
+  selectedClientName,
+  availableEnvironments,
+  selectedEnvironmentName,
+  selectEnvironment,
+  onChange,
+  // error,
+}): React.ReactElement | null => {
   // --- Hooks ---
-  const {
-    availableEnvironments,
-    selectedEnvironmentName,
-    selectEnvironment,
-    selectedClientName, // Needed to determine if environments should be shown
-    error,
-  } = useConfiguration();
+  // const {
+  //   availableEnvironments,
+  //   selectedEnvironmentName,
+  //   selectEnvironment,
+  //   selectedClientName, // Needed to determine if environments should be shown
+  //   error,
+  // } = useConfiguration();
+
+  const { error } = useConfiguration();
 
   // --- Event Handlers ---
   /**
@@ -33,7 +42,7 @@ const EnvironmentSelector: React.FC = (): React.ReactElement | null => {
    * @returns {void}
    */
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    selectEnvironment(event.target.value);
+    onChange(event.target.value);
   };
 
   // --- Render Logic ---
