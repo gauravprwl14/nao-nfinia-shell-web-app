@@ -21,6 +21,7 @@ import {
  * @description Defines the shape of the configuration state managed by the context.
  * @property {RootConfig | null} config - The loaded root configuration object, or null if not loaded/error.
  * @property {ClientConfig[]} clients - List of available clients.
+ * @property {ClientConfig} selectedClient - Selected client.
  * @property {string | null} selectedClientName - The name of the currently selected client.
  * @property {EnvironmentConfig[]} availableEnvironments - List of environments available for the selected client.
  * @property {string | null} selectedEnvironmentName - The name of the currently selected environment.
@@ -32,6 +33,7 @@ import {
 interface ConfigurationState {
   config: RootConfig | null;
   clients: ClientConfig[];
+  selectedClient: ClientConfig | null;
   selectedClientName: string | null;
   availableEnvironments: EnvironmentConfig[];
   selectedEnvironmentName: string | null;
@@ -77,6 +79,9 @@ export const ConfigurationProvider: React.FC<ConfigurationProviderProps> = ({
 }): React.ReactElement => {
   const [config, setConfig] = useState<RootConfig | null>(null);
   const [clients, setClients] = useState<ClientConfig[]>([]);
+  const [selectedClient, setSelectedClient] = useState<ClientConfig | null>(
+    null
+  );
   const [selectedClientName, setSelectedClientName] = useState<string | null>(
     null
   );
@@ -123,7 +128,11 @@ export const ConfigurationProvider: React.FC<ConfigurationProviderProps> = ({
    * @param {string} clientName - The name of the client to select.
    */
   const selectClient = (clientName: string): void => {
+    const client = clients.find((client) => client.name === clientName);
+
+    setSelectedClient(client || null);
     setSelectedClientName(clientName);
+
     const environments = getEnvironmentsForClient(clientName) || [];
     setAvailableEnvironments(environments);
 
@@ -160,6 +169,7 @@ export const ConfigurationProvider: React.FC<ConfigurationProviderProps> = ({
     () => ({
       config,
       clients,
+      selectedClient,
       selectedClientName,
       availableEnvironments,
       selectedEnvironmentName,
@@ -171,6 +181,7 @@ export const ConfigurationProvider: React.FC<ConfigurationProviderProps> = ({
     [
       config,
       clients,
+      selectedClient,
       selectedClientName,
       availableEnvironments,
       selectedEnvironmentName,
