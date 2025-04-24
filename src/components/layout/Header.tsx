@@ -23,13 +23,6 @@ const Header: React.FC = (): React.ReactElement => {
         <h1 className="text-xl font-semibold">SSO Simulation Tool</h1>
         {/* Navigation or other header elements can be added here */}
       </div>
-
-      {/* Configuration Selectors */}
-      <div className="flex flex-col sm:flex-row sm:items-end space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
-        <ClientSelector />
-        <EnvironmentSelector />
-        {/* Future additions: User status, logout button, etc. */}
-      </div>
     </header>
   );
 };

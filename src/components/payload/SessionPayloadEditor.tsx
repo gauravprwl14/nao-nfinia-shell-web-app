@@ -66,7 +66,7 @@ const SessionPayloadEditor: React.FC<SessionPayloadEditorProps> = ({
     <div className="space-y-2">
       <label
         htmlFor="session-payload-editor"
-        className="block text-sm font-medium text-gray-700"
+        className="block text-sm font-medium text-gray-70"
       >
         Session Payload (JSON)
       </label>
@@ -76,7 +76,7 @@ const SessionPayloadEditor: React.FC<SessionPayloadEditorProps> = ({
         rows={10}
         value={payload}
         onChange={handleChange}
-        className={`mt-1 block w-full shadow-sm sm:text-sm rounded-md font-mono
+        className={`mt-1 block w-full shadow-sm sm:text-sm rounded-md font-mono bg-white
                     ${
                       isValid
                         ? "border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"

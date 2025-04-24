@@ -49,7 +49,7 @@ const ClientSelector: React.FC = ({
     <div>
       <label
         htmlFor="client-selector"
-        className="block text-sm font-medium text-gray-300 mb-1" // Adjusted color for header
+        className="block text-sm font-medium text-black mb-1" // Adjusted color for header
       >
         Client
       </label>

@@ -55,7 +55,7 @@ const EnvironmentSelector: React.FC = ({
     <div>
       <label
         htmlFor="environment-selector"
-        className="block text-sm font-medium text-gray-300 mb-1" // Adjusted color for header
+        className="block text-sm font-medium text-black mb-1" // Adjusted color for header
       >
         Environment
       </label>
