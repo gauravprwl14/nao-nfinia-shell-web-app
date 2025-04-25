@@ -2,23 +2,41 @@
 
 import React from "react";
 import { useConfiguration } from "@/context/ConfigurationContext";
-
+import { EnvironmentConfig } from "@/types/config";
+/**
+ * @interface EnvironmentSelectorProps
+ * @description Defines the properties required by the EnvironmentSelector component.
+ * @property {string | undefined} selectedClientName - The name of the currently selected client. Used to determine if the selector should be enabled/rendered.
+ * @property {EnvironmentConfig[]} availableEnvironments - An array of environment configurations available for the selected client.
+ * @property {string} selectedEnvironmentName - The name of the currently selected environment. Controls the select input's value.
+ * @property {(environmentName: string) => void} onChange - Callback function triggered when a new environment is selected. Passes the name of the selected environment.
+ */
+interface EnvironmentSelectorProps {
+  selectedClientName: string | undefined;
+  availableEnvironments: EnvironmentConfig[];
+  selectedEnvironmentName: string;
+  onChange: (environmentName: string) => void;
+  // Removed selectEnvironment prop as onChange handles the selection update via the parent
+}
 /**
  * @component EnvironmentSelector
  * @description Renders a dropdown menu to select the active environment for the currently selected client.
- * @description Uses the `useConfiguration` hook to access the list of available environments
- *              for the selected client and the function to update the selected environment.
+ * @description Receives available environments and selection state via props. Calls the onChange prop when selection changes.
+ * @param {EnvironmentSelectorProps} props - The properties passed to the component.
  * @returns {React.ReactElement | null} A select dropdown element populated with environment names,
- *                                      or null if no client is selected, no environments exist for the client,
- *                                      or if there was a configuration error.
+ *                                      or null if no client is selected or no environments exist for the client.
  * @example
- * <EnvironmentSelector />
+ * <EnvironmentSelector
+ *   selectedClientName={clientName}
+ *   availableEnvironments={envs}
+ *   selectedEnvironmentName={selectedEnv}
+ *   onChange={handleEnvChange}
+ * />
  */
-const EnvironmentSelector: React.FC = ({
+const EnvironmentSelector: React.FC<EnvironmentSelectorProps> = ({
   selectedClientName,
   availableEnvironments,
   selectedEnvironmentName,
-  selectEnvironment,
   onChange,
   // error,
 }): React.ReactElement | null => {

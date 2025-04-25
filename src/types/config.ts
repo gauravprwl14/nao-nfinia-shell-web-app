@@ -9,7 +9,7 @@
 /**
  * @interface UrlConfig
  * @description Defines the structure for URL construction parameters within an environment configuration.
- * @property {string} [pathPrefix="/sso/launch"] - The path prefix for the child application's SSO endpoint.
+ * @property {string} [pathPrefix="/"] - The path prefix for the child application's SSO endpoint.
  * @property {string} [tokenParam="token"] - The query parameter name for the JWE token.
  * @property {Record<string, string>} [additionalParams] - A map of additional static query parameters to include in the URL.
  */
@@ -71,6 +71,7 @@ export interface EnvironmentConfig {
   keys: KeySet; // Added nested keys structure based on .env
   keyEncryptionAlgorithm?: string; // Kept as optional, maps to 'enc' key usage
   contentEncryptionAlgorithm?: string; // Kept as optional
+  signAlgorithm: string; // signature algorithm (e.g., "HS256")
   tokenExpiration?: number; // Kept as optional
   urlConfig?: UrlConfig; // Kept as optional
   // Removed apiKey, apiSecret (top-level), publicKey (top-level) as they are replaced/restructured

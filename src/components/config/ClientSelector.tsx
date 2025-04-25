@@ -5,16 +5,33 @@ import { useConfiguration } from "@/context/ConfigurationContext";
 import { logInfo } from "@/lib/logger";
 
 /**
+ * @interface ClientSelectorProps
+ * @description Defines the properties required by the ClientSelector component.
+ * @property {string} selectedClientName - The name of the currently selected client. Controls the select input's value.
+ * @property {(clientName: string) => void} selectClient - Callback function triggered when a new client is selected. Passes the name of the selected client.
+ */
+interface ClientSelectorProps {
+  selectedClientName: string;
+  selectClient: (clientName: string) => void;
+}
+
+/**
  * @component ClientSelector
  * @description Renders a dropdown menu to select the active client.
- * @description Uses the `useConfiguration` hook to access the list of available clients
- *              and the function to update the selected client in the global context.
+ * @description Uses the `useConfiguration` hook to access the list of available clients.
+ *              Receives the current selection state and the update function via props.
+ * @param {ClientSelectorProps} props - The properties passed to the component.
+ * @param {string} props.selectedClientName - The name of the currently selected client.
+ * @param {(clientName: string) => void} props.selectClient - Function to call when the selection changes.
  * @returns {React.ReactElement | null} A select dropdown element populated with client names,
  *                                      or null if there's an error or no clients are configured.
  * @example
- * <ClientSelector />
+ * <ClientSelector
+ *   selectedClientName={currentClient}
+ *   selectClient={handleClientChange}
+ * />
  */
-const ClientSelector: React.FC = ({
+const ClientSelector: React.FC<ClientSelectorProps> = ({
   selectedClientName,
   selectClient,
 }): React.ReactElement | null => {

@@ -44,7 +44,7 @@ This document outlines the requirements for a web application designed to simula
 - Preview URL functionality before launch
 - Configurable based on testing requirements
 - Appends the generated JWE token to the child application URL
-- Standard URL structure: `https://{childDomain}/sso/launch?token={jweToken}&source=parent-app`
+- Standard URL structure: `https://{childDomain}?ssotoken={jweToken}&source=parent-app`
 - No responsibility for token validation - child app will handle validation errors
 
 ## 3. Configuration Management
@@ -78,8 +78,8 @@ This document outlines the requirements for a web application designed to simula
           "contentEncryptionAlgorithm": "A256GCM",
           "tokenExpiration": 300,
           "urlConfig": {
-            "pathPrefix": "/sso/launch",
-            "tokenParam": "token",
+            "pathPrefix": "",
+            "tokenParam": "ssotoken",
             "additionalParams": {
               "source": "parent-app"
             }
@@ -566,7 +566,7 @@ export default async function handler(
 
     // Construct URL
     const baseUrl = config.childDomain;
-    const pathPrefix = config.urlConfig?.pathPrefix || "/sso/launch";
+    const pathPrefix = config.urlConfig?.pathPrefix || "";
     const tokenParam = config.urlConfig?.tokenParam || "token";
 
     const urlParams = new URLSearchParams({

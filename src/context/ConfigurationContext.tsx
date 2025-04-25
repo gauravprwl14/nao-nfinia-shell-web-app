@@ -15,6 +15,7 @@ import {
   getEnvironmentsForClient,
   getEnvironmentConfig,
 } from "@/lib/config";
+import { logError } from "@/lib/logger";
 
 /**
  * @interface ConfigurationState
@@ -38,7 +39,7 @@ interface ConfigurationState {
   availableEnvironments: EnvironmentConfig[];
   selectedEnvironmentName: string | null;
   selectedEnvironmentConfig: EnvironmentConfig | null;
-  error: Error | null;
+  error: Error | null | unknown;
   selectClient: (clientName: string) => void;
   selectEnvironment: (environmentName: string) => void;
 }
@@ -93,7 +94,7 @@ export const ConfigurationProvider: React.FC<ConfigurationProviderProps> = ({
   >(null);
   const [selectedEnvironmentConfig, setSelectedEnvironmentConfig] =
     useState<EnvironmentConfig | null>(null);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<Error | null | unknown>(null);
 
   /**
    * @effect Load configuration on initial mount.
@@ -113,8 +114,14 @@ export const ConfigurationProvider: React.FC<ConfigurationProviderProps> = ({
       if (loadedClients.length > 0) {
         selectClient(loadedClients[0].name);
       }
-    } catch (err: any) {
-      console.error("Configuration loading error:", err);
+    } catch (err: Error | unknown) {
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Unknown error occurred while loading configuration.";
+      logError(`Failed to load configuration ${errorMessage}`, err, {
+        component: "ConfigurationProvider",
+      });
       setError(err);
       setConfig(null);
       setClients([]);

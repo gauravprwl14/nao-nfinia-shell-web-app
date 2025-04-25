@@ -184,7 +184,7 @@ export function MainApp() {
                 logInfo("Environment selected", { envName });
                 selectEnvironment(envName);
               }}
-              selectEnvironment={selectedEnvironmentConfig}
+              // selectEnvironment={selectedEnvironmentConfig}
               availableEnvironments={availableEnvironments}
             />
           </div>

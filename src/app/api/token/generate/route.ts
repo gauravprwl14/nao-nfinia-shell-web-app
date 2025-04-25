@@ -167,7 +167,7 @@ export async function POST(
 
     // --- 6. Construct Launch URL ---
     // const baseUrl = environmentConfig.childDomain;
-    // const pathPrefix = environmentConfig.urlConfig?.pathPrefix || "/sso/launch";
+    // const pathPrefix = environmentConfig.urlConfig?.pathPrefix || "";
     // const tokenParam = environmentConfig.urlConfig?.tokenParam || "token";
     // const additionalParams =
     //   environmentConfig.urlConfig?.additionalParams || {}; // Ensure it's an object
