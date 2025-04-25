@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import JSONInput from "react-json-editor-ajrm";
-import locale from "react-json-editor-ajrm/locale/en";
+// import locale from "react-json-editor-ajrm/locale/en";
+import { localeEn } from "@/types/react-json-editor-locale";
 import { PayloadEditorProps } from "@/types/payload";
 
 /**
@@ -62,7 +63,7 @@ const UserPayloadEditor: React.FC<PayloadEditorProps> = ({
         <JSONInput
           placeholder={JSON.parse(value || "{}")} // Initial value
           onChange={handleEditorChange}
-          locale={locale}
+          locale={localeEn}
           colors={{
             default: "var(--foreground)",
             background: "var(--background)",
@@ -73,7 +74,7 @@ const UserPayloadEditor: React.FC<PayloadEditorProps> = ({
             keys: "#BA55D3", // MediumOrchid
             keys_whiteSpace: "#8F8F8F",
             primitive: "#4CAF50", // Green
-            error: "#F44336", // Red
+            // error: "#F44336", // Red - using valid 'danger' property instead of 'error'
           }}
           style={{
             outerBox: {

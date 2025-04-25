@@ -239,3 +239,15 @@ export interface CombinedPayload {
   iat: number; // Added by JWT signing process
   exp: number; // Added by JWT signing process
 }
+
+/**
+ * @interface PayloadEditorProps
+ * @summary Properties for payload editor components.
+ * @description Defines the common properties used by payload editor components for managing JSON payloads.
+ * @property {string} value - The initial JSON string value for the payload.
+ * @property {(value: string) => void} onChange - Callback function invoked when the payload changes.
+ */
+export interface PayloadEditorProps {
+  value: string;
+  onChange: (value: string) => void;
+}
