@@ -7,12 +7,7 @@
  */
 
 import React from "react";
-
-/**
- * @typedef {('iframe' | 'newTab')} LaunchMethod
- * @description Type defining the possible launch methods.
- */
-export type LaunchMethod = "iframe" | "newTab";
+import { LaunchMethod } from "@/types/launchOption"; // Importing the LaunchMethod type
 
 /**
  * @interface LaunchOptionsProps
@@ -30,6 +25,7 @@ interface LaunchOptionsProps {
   onPreview: () => Promise<void>; // Renamed from generateToken for clarity
   onLaunch: () => void;
   isLoading: boolean;
+  isUrlGenerated: boolean;
   canLaunch: boolean; // Added to control launch button state
 }
 

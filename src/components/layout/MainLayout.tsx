@@ -9,6 +9,7 @@ import IframeRenderer from "@/components/launch/IframeRenderer";
 import { useConfiguration } from "@/context/ConfigurationContext";
 import { logInfo, logError } from "@/lib/logger"; // Assuming logger exists as per PRD
 import { defaultUserPayload, defaultSessionPayload } from "@/utils/payload"; // Assuming this is where default payloads are stored
+import { LaunchMethod } from "@/types/launchOption"; // Importing the LaunchMethod type
 
 export function MainApp() {
   const {
@@ -24,7 +25,7 @@ export function MainApp() {
   } = useConfiguration();
   const [sessionPayload, setSessionPayload] = useState(defaultSessionPayload);
   const [userPayload, setUserPayload] = useState(defaultUserPayload);
-  const [launchMethod, setLaunchMethod] = useState("iframe"); // 'iframe' or 'newTab'
+  const [launchMethod, setLaunchMethod] = useState<LaunchMethod>("iframe"); // 'iframe' or 'newTab'
   const [token, setToken] = useState("");
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
@@ -190,7 +191,7 @@ export function MainApp() {
           </div>
 
           <SessionPayloadEditor
-            value={sessionPayload}
+            initialValue={sessionPayload}
             onChange={setSessionPayload}
           />
 
