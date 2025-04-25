@@ -96,7 +96,7 @@ const UserPayloadEditor: React.FC<PayloadEditorProps> = ({
               marginTop: "4px",
             },
           }}
-          height="200px"
+          height="500px"
           width="100%"
           waitAfterKeyPress={1000} // Delay validation slightly
         />
