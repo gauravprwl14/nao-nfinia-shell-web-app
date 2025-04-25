@@ -21,7 +21,11 @@ export const isValidJson = (str: string): boolean => {
   try {
     JSON.parse(str);
     return true;
-  } catch (e) {
+  } catch (e: Error | unknown) {
+    const errorMessage =
+      e instanceof Error ? e.message : "Unknown error during JSON parsing";
+    console.error("JSON parsing error:", errorMessage);
+    console.error(e);
     return false;
   }
 };

@@ -5,8 +5,6 @@
  * @updated 2025-04-23 - Added ClientSelector and EnvironmentSelector.
  */
 import React from "react";
-import ClientSelector from "@/components/config/ClientSelector";
-import EnvironmentSelector from "@/components/config/EnvironmentSelector";
 
 /**
  * @component Header

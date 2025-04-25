@@ -10,10 +10,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { getEnvironmentConfig, loadAndValidateConfig } from "@/lib/config";
 import {
   generateSignedAndEncryptedToken,
-  generateJweToken,
+  // generateJweToken,
   constructLaunchUrl,
 } from "@/lib/jwe";
-import { CombinedPayload, SessionPayload, UserPayload } from "@/types/payload";
+import {
+  CombinedPayload,
+  // SessionPayload, UserPayload
+} from "@/types/payload";
 import {
   GenerateTokenRequest,
   GenerateTokenResponse,
@@ -94,14 +97,14 @@ export async function POST(
           `Configuration not found for ${clientName}/${environment}`
         );
       }
-    } catch (error: any) {
+    } catch (error: Error | unknown) {
       // logError('Configuration error during token generation', error, { requestId, clientName, environment }); // Task 5
       console.error("Configuration error during token generation", error);
       return NextResponse.json<GenerateTokenErrorResponse>(
         {
           status: "error",
           code: "INVALID_CONFIGURATION",
-          message: `Configuration error: ${error.message}`,
+          message: `Configuration error: ${(error as Error).message}`,
           timestamp,
           requestId,
         },
@@ -122,9 +125,11 @@ export async function POST(
 
     const combinedPayload: CombinedPayload = {
       // Spread session payload, excluding potential overlaps if needed
-      ...sessionPayload,
+      session: sessionPayload,
       // Nest user payload as per PRD section 8 and 10.1
-      user: userPayload,
+      // Required fields from CombinedPayload type
+      identityKey: userPayload.identityKey || "",
+      customer: userPayload.customer,
       // Add standard JWT claims
       iat: nowSeconds, // Issued At
       exp: expirationSeconds, // Expiration Time
@@ -137,8 +142,12 @@ export async function POST(
         payload: combinedPayload,
         config: environmentConfig,
       });
-    } catch (error: any) {
+    } catch (error: Error | unknown) {
       // logError('JWE token generation failed', error, { requestId, clientName, environment }); // Task 5
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Unknown Error Inside the generateSignedAndEncryptedToken";
       console.error("JWE token generation failed", error);
       return NextResponse.json<GenerateTokenErrorResponse>(
         {
@@ -146,7 +155,7 @@ export async function POST(
           code: "TOKEN_GENERATION_ERROR",
           message: "Failed to generate JWE token.",
           details:
-            process.env.NODE_ENV === "development" ? error.message : undefined,
+            process.env.NODE_ENV === "development" ? errorMessage : undefined,
           timestamp,
           requestId,
         },
@@ -186,17 +195,22 @@ export async function POST(
       },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error: Error | unknown) {
     // Catch unexpected errors during the process
     // logError('Unexpected error in token generation endpoint', error, { requestId }); // Task 5
-    console.error("Unexpected error in token generation endpoint", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    console.error(
+      "Unexpected error in token generation endpoint",
+      errorMessage
+    );
     return NextResponse.json<GenerateTokenErrorResponse>(
       {
         status: "error",
         code: "INTERNAL_SERVER_ERROR",
         message: "An unexpected internal server error occurred.",
         details:
-          process.env.NODE_ENV === "development" ? error.message : undefined,
+          process.env.NODE_ENV === "development" ? errorMessage : undefined,
         timestamp,
         requestId,
       },

@@ -32,13 +32,15 @@ export async function GET(): Promise<NextResponse> {
       },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error: Error | unknown) {
     // If any check fails, return an error status
-    console.error("Health check failed:", error.message);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    console.error("Health check failed:", errorMessage);
     return NextResponse.json(
       {
         status: "error",
-        message: `Health check failed: ${error.message}`,
+        message: `Health check failed: ${errorMessage}`,
         timestamp: timestamp,
       },
       { status: 503 } // 503 Service Unavailable is appropriate here

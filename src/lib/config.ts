@@ -93,9 +93,13 @@ export const loadAndValidateConfig = (): RootConfig => {
     // Memoize the successfully parsed and validated config
     parsedConfig = rootConfig;
     return parsedConfig;
-  } catch (error: any) {
+  } catch (error: Error | unknown) {
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Unknown error occurred inside the loadAndValidateConfig function.";
     parseError = new Error(
-      `Failed to parse or validate CLIENT_CONFIGURATIONS: ${error.message}`
+      `Failed to parse or validate CLIENT_CONFIGURATIONS: ${errorMessage}`
     );
     console.error(parseError.message, error);
     throw parseError;

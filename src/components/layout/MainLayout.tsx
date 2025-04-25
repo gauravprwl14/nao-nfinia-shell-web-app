@@ -53,8 +53,13 @@ export function MainApp() {
       JSON.parse(userPayload);
       setError(""); // Clear previous errors if valid
       return true;
-    } catch (e) {
-      setError(`Invalid JSON in payload: ${e.message}`);
+    } catch (e: Error | unknown) {
+      const errorMessage =
+        e instanceof Error
+          ? e.message
+          : "Unknown error during validatePayloads function";
+
+      setError(`Invalid JSON in payload: ${errorMessage}`);
       logError("Payload validation failed", e, { component: "MainApp" });
       return false;
     }
@@ -248,9 +253,11 @@ interface MainLayoutProps {
  * @description Provides a consistent layout structure including a header and the main content area.
  * @param {MainLayoutProps} props - The props for the component.
  * @param {React.ReactNode} props.children - Child elements to render inside the main content area.
- * @returns {JSX.Element} The main layout component.
+ * @returns {React.ReactElement} The main layout component.
  */
-const MainLayout: React.FC<MainLayoutProps> = ({ children }): JSX.Element => {
+const MainLayout: React.FC<MainLayoutProps> = ({
+  children,
+}): React.ReactElement => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />

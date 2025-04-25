@@ -4,7 +4,7 @@
  * @since 2025-04-23
  */
 
-import { SessionPayload, UserPayload } from "./payload";
+import { SessionPayload, CustomerPayloadWithIdentityKey } from "./payload";
 
 /**
  * @interface GenerateTokenRequest
@@ -18,7 +18,7 @@ export interface GenerateTokenRequest {
   clientName: string;
   environment: string;
   sessionPayload: SessionPayload; // Expecting parsed objects, not strings
-  userPayload: UserPayload;
+  userPayload: CustomerPayloadWithIdentityKey;
 }
 
 /**

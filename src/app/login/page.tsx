@@ -51,9 +51,13 @@ const LoginPage: React.FC = (): React.ReactElement => {
       setAuthStatus(true);
       // Redirect to the main page
       router.push("/");
-    } catch (err: any) {
+    } catch (err: Error | unknown) {
       console.error("Login error:", err);
-      setError(err.message || "An unexpected error occurred during login.");
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "An unexpected error occurred inside handleLogin function";
+      setError(errorMessage);
       setAuthStatus(false); // Ensure auth status is false on error
     } finally {
       setIsLoading(false);
