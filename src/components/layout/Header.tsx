@@ -18,7 +18,7 @@ const Header: React.FC = (): React.ReactElement => {
   return (
     <header className="bg-gray-800 text-white p-4 shadow-md">
       <div className="container mx-auto">
-        <h1 className="text-xl font-semibold">SSO Simulation Tool</h1>
+        <h1 className="text-xl font-semibold">Tyfone Simulation Tool</h1>
         {/* Navigation or other header elements can be added here */}
       </div>
     </header>

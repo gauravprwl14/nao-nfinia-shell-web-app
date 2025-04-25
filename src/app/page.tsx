@@ -17,7 +17,7 @@ export default function HomePage(): React.ReactElement {
       <MainLayout>
         <div className="text-center">
           <h1 className="text-3xl font-bold mb-4">
-            Welcome to the SSO Simulator
+            Welcome to the Tyfone NAO - Nfinia SSO Simulator
           </h1>
           <p className="text-lg text-gray-700">
             You are logged in. Use the upcoming controls to configure and launch

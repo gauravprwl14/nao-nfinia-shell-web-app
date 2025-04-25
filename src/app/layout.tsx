@@ -25,8 +25,8 @@ const geistMono = Geist_Mono({
  * @type {Metadata}
  */
 export const metadata: Metadata = {
-  title: "SSO Simulation Tool",
-  description: "Simulate SSO flows for testing integration.",
+  title: "Tyfone NAO - NFinia Simulation Tool",
+  description: "Simulate Nfinia SSO flows for testing integration.",
 };
 
 /**
