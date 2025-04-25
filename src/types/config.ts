@@ -74,6 +74,7 @@ export interface EnvironmentConfig {
   signAlgorithm: string; // signature algorithm (e.g., "HS256")
   tokenExpiration?: number; // Kept as optional
   urlConfig?: UrlConfig; // Kept as optional
+  expiredTime?: string; // Kept as optional
   // Removed apiKey, apiSecret (top-level), publicKey (top-level) as they are replaced/restructured
 }
 

@@ -47,12 +47,12 @@ interface GenerateTokenOptions {
  * @privateRemarks This assumes the sharedSecret is used for symmetric signing (e.g., HMAC).
  */
 const prepareSigningSecret = (config: EnvironmentConfig): Uint8Array => {
-  if (!config.sharedSecret) {
+  if (!config.clientSecret) {
     throw new Error(
       "Shared secret for signing is missing in the environment configuration."
     );
   }
-  return new TextEncoder().encode(config.sharedSecret);
+  return new TextEncoder().encode(config.clientSecret);
 };
 
 // --- Helper: Import Encryption Public Key ---
@@ -198,10 +198,13 @@ export const generateSignedAndEncryptedToken = async ({
       jws = await new jose.SignJWT(payload as unknown as jose.JWTPayload) // Cast payload to unknown first, then to JWTPayload
         .setProtectedHeader({
           alg: signingAlgorithm,
-          kid: config.clientId, // Use clientId as Key ID for signer
+          apiKey: config.clientId, // Use clientId as Key ID for signer
         })
         .setIssuedAt() // Standard JWT claim: Issued At
-        .setExpirationTime("5m") // Standard JWT claim: Expiration Time (adjust as needed)
+        .setSubject(config.clientId)
+        .setIssuer(config.clientId)
+        .setExpirationTime(config.expiredTime || "15m") // Standard JWT claim: Expiration Time (adjust as needed)
+        .setNotBefore("0s")
         // .setSubject(config.clientId) // Optional: Subject claim
         // .setIssuer(config.clientId) // Optional: Issuer claim
         .setJti(crypto.randomUUID()) // Standard JWT claim: JWT ID (unique identifier)
@@ -247,7 +250,7 @@ export const generateSignedAndEncryptedToken = async ({
       .setProtectedHeader({
         alg: keyEncryptionAlgorithm, // JWE Key Encryption Algorithm
         enc: contentEncryptionAlgorithm, // JWE Content Encryption Algorithm
-        kid: config.clientId, // Use clientId as Key ID for encryption key
+        apiKey: config.clientId, // Use clientId as Key ID for encryption key
         // typ: 'JWT', // Optional: Indicate the encrypted content is a JWT (the JWS)
         // cty: 'JWT', // Optional: Content Type header indicating nested JWT
       })
