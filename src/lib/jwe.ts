@@ -112,56 +112,60 @@ const importEncryptionPublicKey = async (
  * @example
  * const jweToken = await generateJweToken({ payload: myPayload, config: envConfig });
  */
-export const generateJweToken = async ({
-  payload,
-  config,
-}: GenerateTokenOptions): Promise<string> => {
-  const operation = "generateJweToken (Encrypt Only)";
-  try {
-    logInfo(`Starting ${operation}`, { clientId: config.clientId });
+// export const generateJweToken = async ({
+//   payload,
+//   config,
+// }: GenerateTokenOptions): Promise<string> => {
+//   const operation = "generateJweToken (Encrypt Only)";
+//   try {
+//     logInfo(`Starting ${operation}`, { clientId: config.clientId });
 
-    // --- Validate Configuration & Get Algorithms ---
-    const keyEncryptionAlgorithm =
-      config.keyEncryptionAlgorithm || "RSA-OAEP-256"; // Default from PRD
-    const contentEncryptionAlgorithm =
-      config.contentEncryptionAlgorithm || "A256GCM"; // Default from PRD
+//     // --- Validate Configuration & Get Algorithms ---
+//     const keyEncryptionAlgorithm =
+//       config.keyEncryptionAlgorithm || "RSA-OAEP-256"; // Default from PRD
+//     const contentEncryptionAlgorithm =
+//       config.contentEncryptionAlgorithm || "A256GCM"; // Default from PRD
 
-    // --- Import Public Key ---
-    const publicKey = await importEncryptionPublicKey(
-      config,
-      keyEncryptionAlgorithm
-    );
+//     // --- Import Public Key ---
+//     const publicKey = await importEncryptionPublicKey(
+//       config,
+//       keyEncryptionAlgorithm
+//     );
 
-    // --- Prepare Payload ---
-    const payloadString = JSON.stringify(payload);
-    const payloadBytes = new TextEncoder().encode(payloadString);
-    logInfo("Payload prepared for encryption", {
-      clientId: config.clientId,
-      byteLength: payloadBytes.byteLength,
-    });
+//     // --- Prepare Payload ---
+//     logInfo("Preparing payload for encryption", {
+//       clientId: config.clientId,
+//       payload: JSON.stringify(payload),
+//     });
+//     const payloadString = JSON.stringify(payload);
+//     const payloadBytes = new TextEncoder().encode(payloadString);
+//     logInfo("Payload prepared for encryption", {
+//       clientId: config.clientId,
+//       byteLength: payloadBytes.byteLength,
+//     });
 
-    // --- Encrypt Payload (Generate JWE) ---
-    const jwe = await new jose.CompactEncrypt(payloadBytes)
-      .setProtectedHeader({
-        alg: keyEncryptionAlgorithm, // JWE Key Encryption Algorithm
-        enc: contentEncryptionAlgorithm, // JWE Content Encryption Algorithm
-        kid: config.clientId, // Use clientId as Key ID
-        // typ: 'JWT', // Optional: Indicate payload type if relevant
-      })
-      .encrypt(publicKey);
+//     // --- Encrypt Payload (Generate JWE) ---
+//     const jwe = await new jose.CompactEncrypt(payloadBytes)
+//       .setProtectedHeader({
+//         alg: keyEncryptionAlgorithm, // JWE Key Encryption Algorithm
+//         enc: contentEncryptionAlgorithm, // JWE Content Encryption Algorithm
+//         kid: config.clientId, // Use clientId as Key ID
+//         // typ: 'JWT', // Optional: Indicate payload type if relevant
+//       })
+//       .encrypt(publicKey);
 
-    logInfo(`Completed ${operation}`, { clientId: config.clientId });
-    return jwe;
-  } catch (error: Error | unknown) {
-    logError(`${operation} failed`, error, { clientId: config.clientId });
-    // Re-throw a consistent error format
-    const errorMessage =
-      error instanceof Error
-        ? error.message
-        : "Unknown error during JWE generation";
-    throw new Error(`JWE generation (encrypt-only) failed: ${errorMessage}`);
-  }
-};
+//     logInfo(`Completed ${operation}`, { clientId: config.clientId });
+//     return jwe;
+//   } catch (error: Error | unknown) {
+//     logError(`${operation} failed`, error, { clientId: config.clientId });
+//     // Re-throw a consistent error format
+//     const errorMessage =
+//       error instanceof Error
+//         ? error.message
+//         : "Unknown error during JWE generation";
+//     throw new Error(`JWE generation (encrypt-only) failed: ${errorMessage}`);
+//   }
+// };
 
 // --- New JWS+JWE Generation (Sign then Encrypt) ---
 /**
@@ -185,6 +189,11 @@ export const generateSignedAndEncryptedToken = async ({
   const operation = "generateSignedAndEncryptedToken (Sign then Encrypt)";
   try {
     logInfo(`Starting ${operation}`, { clientId: config.clientId });
+
+    logInfo("Preparing payload for signing", {
+      clientId: config.clientId,
+      payload: JSON.stringify(payload),
+    });
 
     // === Step 1: Sign the Payload (Create JWS) ===
 
