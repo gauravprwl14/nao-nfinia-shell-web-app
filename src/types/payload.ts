@@ -216,7 +216,7 @@ export interface CustomerPayload {
 
 export interface CustomerPayloadWithIdentityKey {
   identityKey: string; // Unique identifier for the session or user
-  customer: CustomerPayload;
+  customers: CustomerPayload[];
 }
 
 // --- Combined Payload ---
@@ -235,7 +235,7 @@ export interface CustomerPayloadWithIdentityKey {
 export interface CombinedPayload {
   session: SessionPayload;
   identityKey: string; // Unique identifier for the session or user
-  customer: CustomerPayload;
+  customers: CustomerPayload[];
   iat: number; // Added by JWT signing process
   exp: number; // Added by JWT signing process
 }

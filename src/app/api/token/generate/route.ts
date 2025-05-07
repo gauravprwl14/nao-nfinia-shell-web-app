@@ -129,7 +129,7 @@ export async function POST(
       // Nest user payload as per PRD section 8 and 10.1
       // Required fields from CombinedPayload type
       identityKey: userPayload.identityKey || "",
-      customer: userPayload.customer,
+      customers: userPayload.customers,
       // Add standard JWT claims
       iat: nowSeconds, // Issued At
       exp: expirationSeconds, // Expiration Time
