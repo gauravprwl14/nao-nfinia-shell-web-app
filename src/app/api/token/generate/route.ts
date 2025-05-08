@@ -126,10 +126,11 @@ export async function POST(
     const combinedPayload: CombinedPayload = {
       // Spread session payload, excluding potential overlaps if needed
       session: sessionPayload,
+      ...userPayload,
       // Nest user payload as per PRD section 8 and 10.1
       // Required fields from CombinedPayload type
-      identityKey: userPayload.identityKey || "",
-      customers: userPayload.customers,
+      // identityKey: userPayload.identityKey || "",
+      // customers: userPayload.customers,
       // Add standard JWT claims
       iat: nowSeconds, // Issued At
       exp: expirationSeconds, // Expiration Time

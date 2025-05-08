@@ -50,8 +50,8 @@ export function MainApp() {
   // Validate JSON payloads before attempting generation
   const validatePayloads = (): boolean => {
     try {
-      JSON.parse(sessionPayload);
-      JSON.parse(userPayload);
+      JSON.parse(JSON.stringify(sessionPayload));
+      JSON.parse(JSON.stringify(userPayload));
       setError(""); // Clear previous errors if valid
       return true;
     } catch (e: Error | unknown) {
@@ -82,7 +82,6 @@ export function MainApp() {
       setToken("");
       setUrl("");
       setIsUrlGenerated(false);
-
       const response = await fetch("/api/token/generate", {
         method: "POST",
         headers: {
@@ -91,8 +90,8 @@ export function MainApp() {
         body: JSON.stringify({
           clientName: selectedClient?.name,
           environment: selectedEnvironmentConfig?.name,
-          sessionPayload: JSON.parse(sessionPayload),
-          userPayload: JSON.parse(userPayload),
+          sessionPayload: sessionPayload,
+          userPayload: userPayload,
         }),
       });
 
@@ -157,6 +156,19 @@ export function MainApp() {
     }
   };
 
+  // Render the main application UI
+  logInfo("Rendering MainApp", {
+    // selectedClient,
+    // selectedEnvironmentConfig,
+    // sessionPayload,
+    userPayload,
+    // launchMethod,
+    // token,
+    // url,
+    // loading,
+    // error,
+  });
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-6">SSO Simulation Tool</h1>
@@ -195,7 +207,13 @@ export function MainApp() {
             onChange={setSessionPayload}
           />
 
-          <UserPayloadEditor value={userPayload} onChange={setUserPayload} />
+          <UserPayloadEditor
+            value={userPayload}
+            onChange={(value) => {
+              logInfo("User Payload Editor", { userPayload: value });
+              setUserPayload(value);
+            }}
+          />
         </div>
 
         {/* Launch and Preview Section */}

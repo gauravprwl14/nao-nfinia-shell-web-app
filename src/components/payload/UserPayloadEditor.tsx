@@ -5,6 +5,7 @@ import JSONInput from "react-json-editor-ajrm";
 // import locale from "react-json-editor-ajrm/locale/en";
 import { localeEn } from "@/types/react-json-editor-locale";
 import { PayloadEditorProps } from "@/types/payload";
+import { logInfo } from "@/lib/logger";
 
 /**
  * @summary Component for editing the user information payload.
@@ -37,8 +38,10 @@ const UserPayloadEditor: React.FC<PayloadEditorProps> = ({
     json?: string;
     error?: boolean;
   }) => {
+    console.log("Editor data:", data);
     setIsValid(!data.error);
     if (!data.error && data.json) {
+      logInfo("User Payload Editor", { userPayload: data.json });
       onChange(data.json);
     } else if (data.json === "") {
       // Allow clearing the editor
@@ -61,21 +64,21 @@ const UserPayloadEditor: React.FC<PayloadEditorProps> = ({
         }`}
       >
         <JSONInput
-          placeholder={JSON.parse(value || "{}")} // Initial value
+          placeholder={value || {}} // Initial value
           onChange={handleEditorChange}
           locale={localeEn}
-          colors={{
-            default: "var(--foreground)",
-            background: "var(--background)",
-            background_warning: "var(--background)", // Use standard background for warnings
-            string: "#DAA520", // DarkGoldenrod
-            number: "#1E90FF", // DodgerBlue
-            colon: "var(--foreground)",
-            keys: "#BA55D3", // MediumOrchid
-            keys_whiteSpace: "#8F8F8F",
-            primitive: "#4CAF50", // Green
-            // error: "#F44336", // Red - using valid 'danger' property instead of 'error'
-          }}
+          // colors={{
+          //   default: "var(--foreground)",
+          //   background: "var(--background)",
+          //   background_warning: "var(--background)", // Use standard background for warnings
+          //   string: "#DAA520", // DarkGoldenrod
+          //   number: "#1E90FF", // DodgerBlue
+          //   colon: "var(--foreground)",
+          //   keys: "#BA55D3", // MediumOrchid
+          //   // keys_whiteSpace: "#8F8F8F",
+          //   primitive: "#4CAF50", // Green
+          //   // error: "#F44336", // Red - using valid 'danger' property instead of 'error'
+          // }}
           style={{
             outerBox: {
               border: "none",
@@ -98,7 +101,7 @@ const UserPayloadEditor: React.FC<PayloadEditorProps> = ({
           }}
           height="500px"
           width="100%"
-          waitAfterKeyPress={1000} // Delay validation slightly
+          waitAfterKeyPress={100} // Delay validation slightly
         />
       </div>
       {!isValid && (
