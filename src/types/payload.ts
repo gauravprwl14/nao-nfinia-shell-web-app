@@ -248,6 +248,7 @@ export interface CombinedPayload {
  * @property {(value: string) => void} onChange - Callback function invoked when the payload changes.
  */
 export interface PayloadEditorProps {
-  value: string;
-  onChange: (value: string) => void;
+  value: string | object;
+  onChange: (value: object) => void;
+  title: string;
 }

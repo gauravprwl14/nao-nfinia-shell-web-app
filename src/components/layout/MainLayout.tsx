@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ClientSelector from "@/components/config/ClientSelector";
 import EnvironmentSelector from "@/components/config/EnvironmentSelector";
-import SessionPayloadEditor from "@/components/payload/SessionPayloadEditor";
 // import UserPayloadEditor from "@/components/payload/UserPayloadEditor"; // Comment out direct import
 import LaunchOptions from "@/components/launch/LaunchOptions";
 import TokenPreview from "@/components/preview/TokenPreview";
@@ -14,8 +13,8 @@ import { LaunchMethod } from "@/types/launchOption"; // Importing the LaunchMeth
 import dynamic from "next/dynamic";
 
 // Dynamically import UserPayloadEditor with SSR turned off
-const UserPayloadEditor = dynamic(
-  () => import("@/components/payload/UserPayloadEditor"),
+const PayloadEditor = dynamic(
+  () => import("@/components/payload/PayloadEditor"), // Adjust the path as necessary
   {
     ssr: false,
     loading: () => <p>Loading editor...</p>, // Optional loading state
@@ -213,12 +212,17 @@ export function MainApp() {
             />
           </div>
 
-          <SessionPayloadEditor
-            initialValue={sessionPayload}
-            onChange={setSessionPayload}
+          <PayloadEditor
+            title="Session Payload (JSON)"
+            value={sessionPayload}
+            onChange={(value) => {
+              logInfo("User Payload Editor", { userPayload: value });
+              setSessionPayload(value as SessionPayload);
+            }}
           />
 
-          <UserPayloadEditor
+          <PayloadEditor
+            title="User Payload (JSON)"
             value={userPayload}
             onChange={(value) => {
               logInfo("User Payload Editor", { userPayload: value });
@@ -269,6 +273,7 @@ export function MainApp() {
 
 // import React from "react";
 import Header from "./Header";
+import { SessionPayload } from "@/types/payload";
 
 /**
  * Props for the MainLayout component.

@@ -20,9 +20,11 @@ export const generateDefaultSessionPayload = (): SessionPayload => {
   };
 };
 
+export const defaultSessionPayload = generateDefaultSessionPayload();
+
 // Default payload templates (as mentioned in Task 3, using PRD examples)
-export const defaultSessionPayload = JSON.stringify(
-  generateDefaultSessionPayload(),
-  null,
-  2
-);
+// export const defaultSessionPayload = JSON.stringify(
+//   generateDefaultSessionPayload(),
+//   null,
+//   2
+// );

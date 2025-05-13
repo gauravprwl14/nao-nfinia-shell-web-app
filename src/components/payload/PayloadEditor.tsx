@@ -14,6 +14,7 @@ import { logError, logInfo } from "@/lib/logger";
  * The component manages the state of the user payload internally and calls the provided onChange handler when the payload is updated.
  * @param {PayloadEditorProps} props - The properties for the UserPayloadEditor component.
  * @param {string} props.value - The initial JSON string value for the user payload.
+ * @param {string} props.title - The initial title for the payload editor.
  * @param {(value: string) => void} props.onChange - Callback function invoked when the user payload changes.
  * @returns {React.ReactElement} The rendered UserPayloadEditor component.
  * @example
@@ -23,6 +24,7 @@ import { logError, logInfo } from "@/lib/logger";
 const UserPayloadEditor: React.FC<PayloadEditorProps> = ({
   value,
   onChange,
+  title,
 }) => {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [currentValue, setCurrentValue] = useState(value);
@@ -49,7 +51,7 @@ const UserPayloadEditor: React.FC<PayloadEditorProps> = ({
       if (!model) return;
       model.pushEditOperations(
         [],
-        [{ range: model.getFullModelRange(), text: currentValue }],
+        [{ range: model.getFullModelRange(), text: currentValue as string }],
         () => null
       );
       if (position) editor.setPosition(position);
@@ -83,7 +85,7 @@ const UserPayloadEditor: React.FC<PayloadEditorProps> = ({
       const val = newValue || "";
       setCurrentValue(val);
       try {
-        const parsedValue = JSON.parse(val);
+        const parsedValue: object = JSON.parse(val);
         setIsValid(true);
         logInfo("User Payload Editor", { userPayload: parsedValue });
         onChange(parsedValue);
@@ -124,7 +126,7 @@ const UserPayloadEditor: React.FC<PayloadEditorProps> = ({
         htmlFor="user-payload-editor" // Although Monaco doesn't use a native input, this is good for semantics
         className="block text-sm font-medium text-gray-700 dark:text-gray-300"
       >
-        User Information Payload
+        {title || "Payload (JSON)"} {/* Added title prop */}
       </label>
       <div
         id="user-payload-editor-container" // Changed ID to avoid conflict if Monaco creates its own with the same ID
