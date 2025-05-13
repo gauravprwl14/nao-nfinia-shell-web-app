@@ -1,16 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
-import JSONInput from "react-json-editor-ajrm";
-// import locale from "react-json-editor-ajrm/locale/en";
-import { localeEn } from "@/types/react-json-editor-locale";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import Editor from "@monaco-editor/react"; // Monaco type import removed as it was unused
+// import { editor } from "monaco-editor"; // Import editor type for markers
 import { PayloadEditorProps } from "@/types/payload";
-import { logInfo } from "@/lib/logger";
+import { logError, logInfo } from "@/lib/logger";
 
 /**
  * @summary Component for editing the user information payload.
- * @description Provides a JSON editor interface for users to input and modify the user information payload.
- * It utilizes the 'react-json-editor-ajrm' library for JSON editing capabilities, including syntax highlighting and validation.
+ * @description Provides a Monaco editor interface for users to input and modify the user information payload.
+ * It utilizes the '@monaco-editor/react' library for a rich JSON editing experience,
+ * including syntax highlighting, validation, and auto-completion.
  * The component manages the state of the user payload internally and calls the provided onChange handler when the payload is updated.
  * @param {PayloadEditorProps} props - The properties for the UserPayloadEditor component.
  * @param {string} props.value - The initial JSON string value for the user payload.
@@ -24,84 +24,133 @@ const UserPayloadEditor: React.FC<PayloadEditorProps> = ({
   value,
   onChange,
 }) => {
+  const editorRef = useRef<any>(null);
+  const [currentValue, setCurrentValue] = useState(value);
   const [isValid, setIsValid] = useState(true);
+  const [editorTheme, setEditorTheme] = useState("vs-light"); // Default to light theme
+
+  // Effect to update editor theme based on system preference
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = () => {
+      setEditorTheme(mediaQuery.matches ? "vs-dark" : "vs-light");
+    };
+    handleChange(); // Set initial theme
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  // Sync external value into editor without losing cursor or undo stack
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (editor && currentValue !== editor.getValue()) {
+      const model = editor.getModel();
+      const position = editor.getPosition();
+      model.pushEditOperations(
+        [],
+        [{ range: model.getFullModelRange(), text: currentValue }],
+        () => null
+      );
+      if (position) editor.setPosition(position);
+    }
+  }, [currentValue]);
+
+  // Effect to sync internal state if the prop value changes from outside
+  // useEffect(() => {
+  //   if (value !== currentValue) {
+  //     setCurrentValue(value);
+  //     try {
+  //       JSON.parse(value);
+  //       setIsValid(true);
+  //     } catch {
+  //       // Error parsing, set as invalid
+  //       setIsValid(false);
+  //     }
+  //   }
+  // }, [value, currentValue]); // Added currentValue to dependency array
+
+  function handleEditorDidMount(editor, monaco) {
+    editorRef.current = editor;
+  }
 
   /**
-   * Handles changes from the JSON editor.
-   * @param {object} data - The data object from the JSON editor.
-   * @param {string} data.jsObject - The JavaScript object representation of the JSON.
-   * @param {string} data.json - The JSON string representation.
-   * @param {boolean} data.error - Indicates if there is a parsing error.
+   * Handles changes from the Monaco editor.
+   * @param {string | undefined} newValue - The new value from the editor.
    */
-  const handleEditorChange = (data: {
-    jsObject?: object;
-    json?: string;
-    error?: boolean;
-  }) => {
-    console.log("Editor data:", data);
-    setIsValid(!data.error);
-    if (!data.error && data.json) {
-      logInfo("User Payload Editor", { userPayload: data.json });
-      onChange(data.json);
-    } else if (data.json === "") {
-      // Allow clearing the editor
-      onChange("");
-    }
-  };
+  const handleEditorChange = useCallback(
+    (newValue: string | undefined) => {
+      const val = newValue || "";
+      setCurrentValue(val);
+      try {
+        const parsedValue = JSON.parse(val);
+        setIsValid(true);
+        logInfo("User Payload Editor", { userPayload: parsedValue });
+        onChange(parsedValue);
+      } catch (error) {
+        logError("User Payload Editor", {
+          error: "Invalid JSON format",
+          details: error,
+          userPayload: val,
+        });
+        // Error parsing, set as invalid
+        setIsValid(false);
+        // Still call onChange with the potentially invalid JSON
+        // so the parent component is aware and can decide how to handle it.
+        // onChange(val);
+      }
+    },
+    [onChange] // onChange is a dependency
+  );
+
+  /**
+   * Handles editor validation events.
+   * @param {editor.IMarker[]} markers - An array of validation markers from the editor.
+   */
+  const handleEditorValidation = useCallback((markers: any) => {
+    setIsValid(markers.length === 0);
+  }, []);
+
+  logInfo("User Payload Editor", {
+    // userPayload: currentValue,
+    userPayLoadType: typeof currentValue,
+    isValid,
+    editorTheme,
+  });
 
   return (
     <div className="space-y-2">
       <label
-        htmlFor="user-payload-editor"
+        htmlFor="user-payload-editor" // Although Monaco doesn't use a native input, this is good for semantics
         className="block text-sm font-medium text-gray-700 dark:text-gray-300"
       >
         User Information Payload
       </label>
       <div
-        id="user-payload-editor"
-        className={`rounded-md border ${
+        id="user-payload-editor-container" // Changed ID to avoid conflict if Monaco creates its own with the same ID
+        className={`rounded-md border overflow-hidden ${
           isValid ? "border-gray-300 dark:border-gray-600" : "border-red-500"
         }`}
       >
-        <JSONInput
-          placeholder={value || {}} // Initial value
-          onChange={handleEditorChange}
-          locale={localeEn}
-          // colors={{
-          //   default: "var(--foreground)",
-          //   background: "var(--background)",
-          //   background_warning: "var(--background)", // Use standard background for warnings
-          //   string: "#DAA520", // DarkGoldenrod
-          //   number: "#1E90FF", // DodgerBlue
-          //   colon: "var(--foreground)",
-          //   keys: "#BA55D3", // MediumOrchid
-          //   // keys_whiteSpace: "#8F8F8F",
-          //   primitive: "#4CAF50", // Green
-          //   // error: "#F44336", // Red - using valid 'danger' property instead of 'error'
-          // }}
-          style={{
-            outerBox: {
-              border: "none",
-              borderRadius: "0.375rem", // Corresponds to rounded-md
-              backgroundColor: "var(--background)",
-            },
-            container: {
-              backgroundColor: "var(--background)",
-              fontSize: "14px",
-              fontFamily: "monospace",
-            },
-            warningBox: {
-              backgroundColor: "var(--background)",
-            },
-            errorMessage: {
-              color: "#F44336", // Red
-              fontSize: "12px",
-              marginTop: "4px",
-            },
-          }}
+        <Editor
           height="500px"
-          width="100%"
-          waitAfterKeyPress={100} // Delay validation slightly
+          language="json"
+          theme={editorTheme}
+          defaultValue={JSON.stringify(currentValue, null, 2)}
+          onChange={handleEditorChange}
+          onValidate={handleEditorValidation}
+          onMount={handleEditorDidMount}
+          options={{
+            minimap: { enabled: false },
+            scrollBeyondLastLine: false,
+            fontSize: 14,
+            fontFamily: "monospace",
+            automaticLayout: true, // Ensures editor resizes correctly
+            formatOnPaste: true,
+            formatOnType: true,
+            wordWrap: "on", // Enable word wrapping
+            tabSize: 2, // Set tab size to 2 spaces
+            insertSpaces: true, // Ensure tabs are spaces
+          }}
         />
       </div>
       {!isValid && (
