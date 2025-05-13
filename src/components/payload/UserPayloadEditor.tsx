@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import Editor from "@monaco-editor/react"; // Monaco type import removed as it was unused
-// import { editor } from "monaco-editor"; // Import editor type for markers
+import { editor } from "monaco-editor"; // Import editor type for markers
 import { PayloadEditorProps } from "@/types/payload";
 import { logError, logInfo } from "@/lib/logger";
 
@@ -24,7 +24,7 @@ const UserPayloadEditor: React.FC<PayloadEditorProps> = ({
   value,
   onChange,
 }) => {
-  const editorRef = useRef<any>(null);
+  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [currentValue, setCurrentValue] = useState(value);
   const [isValid, setIsValid] = useState(true);
   const [editorTheme, setEditorTheme] = useState("vs-light"); // Default to light theme
@@ -46,6 +46,7 @@ const UserPayloadEditor: React.FC<PayloadEditorProps> = ({
     if (editor && currentValue !== editor.getValue()) {
       const model = editor.getModel();
       const position = editor.getPosition();
+      if (!model) return;
       model.pushEditOperations(
         [],
         [{ range: model.getFullModelRange(), text: currentValue }],
@@ -69,7 +70,7 @@ const UserPayloadEditor: React.FC<PayloadEditorProps> = ({
   //   }
   // }, [value, currentValue]); // Added currentValue to dependency array
 
-  function handleEditorDidMount(editor, monaco) {
+  function handleEditorDidMount(editor: editor.IStandaloneCodeEditor) {
     editorRef.current = editor;
   }
 
@@ -106,7 +107,7 @@ const UserPayloadEditor: React.FC<PayloadEditorProps> = ({
    * Handles editor validation events.
    * @param {editor.IMarker[]} markers - An array of validation markers from the editor.
    */
-  const handleEditorValidation = useCallback((markers: any) => {
+  const handleEditorValidation = useCallback((markers: editor.IMarker[]) => {
     setIsValid(markers.length === 0);
   }, []);
 
