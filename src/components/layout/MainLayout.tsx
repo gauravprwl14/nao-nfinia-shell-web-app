@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ClientSelector from "@/components/config/ClientSelector";
 import EnvironmentSelector from "@/components/config/EnvironmentSelector";
 import SessionPayloadEditor from "@/components/payload/SessionPayloadEditor";
-import UserPayloadEditor from "@/components/payload/UserPayloadEditor";
+// import UserPayloadEditor from "@/components/payload/UserPayloadEditor"; // Comment out direct import
 import LaunchOptions from "@/components/launch/LaunchOptions";
 import TokenPreview from "@/components/preview/TokenPreview";
 import IframeRenderer from "@/components/launch/IframeRenderer";
@@ -10,6 +10,17 @@ import { useConfiguration } from "@/context/ConfigurationContext";
 import { logInfo, logError } from "@/lib/logger"; // Assuming logger exists as per PRD
 import { defaultUserPayload, defaultSessionPayload } from "@/utils/payload"; // Assuming this is where default payloads are stored
 import { LaunchMethod } from "@/types/launchOption"; // Importing the LaunchMethod type
+
+import dynamic from "next/dynamic";
+
+// Dynamically import UserPayloadEditor with SSR turned off
+const UserPayloadEditor = dynamic(
+  () => import("@/components/payload/UserPayloadEditor"),
+  {
+    ssr: false,
+    loading: () => <p>Loading editor...</p>, // Optional loading state
+  }
+);
 
 export function MainApp() {
   const {
