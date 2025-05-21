@@ -1,6 +1,9 @@
 export const UserPayload = JSON.stringify(
   {
-    identityKey: "UzJzb1lFT0gzaUdCQ3MyMU8yZmRSUT09",
+    user: {
+      identityKey: "UzJzb1lFT0gzaUdCQ3MyMU8yZmRSUT09",
+    },
+
     // customers: [
     //   {
     //     customerId: "322687",
