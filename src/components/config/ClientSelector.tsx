@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useConfiguration } from "@/context/ConfigurationContext";
 import { logInfo } from "@/lib/logger";
 
@@ -38,6 +38,26 @@ const ClientSelector: React.FC<ClientSelectorProps> = ({
   // --- Hooks ---
   // const { clients, selectedClientName, selectClient, error } =
   const { clients, error } = useConfiguration();
+
+  useEffect(() => {
+    if (!clients || clients.length === 0) {
+      logInfo("No clients available to select.");
+      return;
+    }
+
+    if (!selectedClientName) {
+      logInfo("No client selected, defaulting to the first client.");
+      selectClient(clients[0].name);
+      return;
+    }
+
+    logInfo(
+      `Inside the config selector Client selected: ${selectedClientName}`
+    );
+    // return () => {
+    //   second
+    // }
+  }, []);
 
   // --- Event Handlers ---
   /**

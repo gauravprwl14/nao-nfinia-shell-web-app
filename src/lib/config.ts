@@ -46,7 +46,9 @@ export const loadAndValidateConfig = (): RootConfig => {
 
   try {
     const config: unknown = JSON.parse(configJson);
-    console.log("Parsed CLIENT_CONFIGURATIONS:", { config });
+    console.log("Parsed CLIENT_CONFIGURATIONS:", {
+      config: JSON.stringify(config),
+    });
 
     // Basic structural validation (more robust validation can be added using libraries like Zod)
     if (
